@@ -1,0 +1,104 @@
+ SQL Validation for power BI
+---------------------------------
+
+#TOTAL Revenue
+select sum(total_price) as revenue from Online_projects.pizza;
+
+#Average order value
+select sum(total_price)/count(distinct order_id) as Avg_order_value from Online_projects.pizza;
+
+#Total_pizza_sold
+select sum(quantity) as total_pizza from Online_projects.pizza;
+
+#Total_orders
+Select count(distinct order_id) as total_orders from Online_projects.pizza;
+
+#Avg pizza per orderId
+select sum(quantity)/count(distinct order_id) as Avg_pizza_per_orderid from Online_projects.pizza;
+
+#Daily trend for total_orders
+select extract(dayofweek from order_date) as dayname, count(distinct order_id) as cnt
+from `Online_projects.pizza`
+group by extract(dayofweek from order_date);
+
+#Hourly trend for total_orders
+select distinct extract(HOUR from order_time) as hr,count(distinct order_id) as cnt 
+from `Online_projects.pizza`
+group by extract(HOUR from order_time);
+
+#Monthly trend for total_orders
+select distinct extract(month from order_date) as dte, count(distinct order_id) as cnt
+from Online_projects.pizza
+group by extract(month from order_date);
+
+#Percentage of sales by category
+select distinct pizza_category, sum(total_price)/(select sum(total_price) from Online_projects.pizza) * 100
+from Online_projects.pizza
+group by pizza_category; 
+
+#Percentage of sale by pizza size
+select pizza_size,sum(total_price)/(select sum(total_price) from Online_projects.pizza) * 100 
+from Online_projects.pizza
+group by pizza_size
+;
+
+#Total pizza sold by pizza category
+select pizza_category, sum(quantity) as total
+from Online_projects.pizza
+group by pizza_category;
+
+#Total 5 Best sellers by Revenue, quantity and total orders
+Select pizza_name,sum(total_price) as Revenue
+from Online_projects.pizza 
+group by pizza_name
+order by Revenue desc
+limit 5;
+
+Select pizza_name,sum(quantity) as Total_quantity
+from Online_projects.pizza 
+group by pizza_name
+order by Total_quantity desc
+limit 5;
+
+
+Select pizza_name,count(distinct order_id) as No_of_orders
+from Online_projects.pizza 
+group by pizza_name
+order by No_of_orders desc
+limit 5;
+
+#Bottom 5 sellers by revenue,quantity, and orders
+Select pizza_name,sum(total_price) as revenue
+from Online_projects.pizza 
+group by pizza_name
+order by revenue asc
+limit 5;
+
+
+Select pizza_name,sum(quantity) as No_of_quantity
+from Online_projects.pizza 
+group by pizza_name
+order by No_of_quantity asc
+limit 5;
+
+
+Select pizza_name,count(distinct order_id) as No_of_orders
+from Online_projects.pizza 
+group by pizza_name
+order by No_of_orders asc
+limit 5;
+
+
+Steps to create Dashboard
+
+1)Load the data from csv table into power query
+2)check quality issue and data type (everything is perfect except order date)
+3)Replace M-medium,L-large,s-Regular and xlarge with X-Large by selecting and right clicking the pizza size column
+and change click of replace values  and apply and load.
+4)Go to report view--> Create a measure for total revenue and total orders
+total_revenue=sum(total _price)
+total_orders=distinct(order_id)
+Avg order value=total_revenue/total orders
+total pizza sold=sum(quantity)
+Avg pizza per order=total pizza sold/ total orders
+
